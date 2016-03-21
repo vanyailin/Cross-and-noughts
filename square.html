@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<!-- saved from url=(0155)file:///G:/javascript/%D0%BA%D1%80%D0%B5%D1%81%D1%82%D0%B8%D0%BA%D0%B8-%D0%BD%D0%BE%D0%BB%D0%B8%D0%BA%D0%B8/%D0%BA%D0%B2%D0%B0%D0%B4%D1%80%D0%B0%D1%82.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<script src="./square_files/jquery-2.2.0.min.js"></script>
+	<style>
+		.field{
+			display: inline-block;
+			border: 2px solid purple;
+			width: 50px;
+			height: 50px;
+			position: absolute;
+			cursor:pointer;
+		}
+		.field-nought{
+			background-image:url('zero.JPG');
+		}
+		.field-cross{
+			background-image:url('krest.JPG');
+		}
+		
+		.game-over {
+			cursor:default;
+		}
+	</style>
+</head>
+<body>
+	<script>
+	var mapWidth=10;
+	var mapHeight=10;
+	var mapLength=3;
+		$(function(){
+			for (var x = 1; x <= mapWidth; x++) {
+				for (var y = 1; y <= mapHeight; y++) {
+					$('<div></div>')
+					.addClass('field')
+					.attr('id','field'+x.toString()+'-' + y.toString())
+					.css({left:(x-1)*50, top:(y-1)*50})
+					.data('x',x)
+					.data('y',y)
+					.appendTo('#map')
+				}
+			}
+
+			var checkSight=false;
+			$('.field').on('click',function(){
+				if($(this).hasClass('field-cross')
+				||$(this).hasClass('field-nought')) return;
+				checkSight=!checkSight;
+				$(this).addClass(checkSight?'field-cross':'field-nought');
+				function check(x,y){
+					return $('#field'+x.toString()+'-'+y.toString())
+						.hasClass(checkSight?'field-cross':'field-nought');
+				};	
+				
+				var startX = parseInt($(this).data('x'));
+				var startY = parseInt($(this).data('y'));
+							
+								
+								var directions = [{x:1,y:0},{x:0, y:1},{x:1, y:1},{x:-1, y:1}];
+								for (var i=0; i<directions.length; i++){
+									var sum = 0;
+										 $.each([-1,1],
+											function(index,offset){
+												var x = startX;
+												var y = startY;
+													do{
+													x+=directions[i].x*offset;
+													y+=directions[i].y*offset;
+													sum++;
+													} while(check(x,y));
+											}
+										);
+										if(sum-1==mapLength){
+									alert("Выиграл "+(checkSight?'X':'O'));
+										$('.field').addClass("game-over");
+										$('.field').off('click');	
+									}
+								
+								}
+		
+							
+			});	
+		});
+	</script>
+	<div id="map">
+	</div>
+
+
+</body>
+</html>
